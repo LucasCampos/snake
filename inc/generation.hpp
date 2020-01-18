@@ -29,6 +29,7 @@ private:
     std::uniform_real_distribution<float> dist;
 
     NeuralNetwork cross_breed(const NeuralNetwork& nn1, const NeuralNetwork& nn2);
+    void mutate(NeuralNetwork& nn);
 };
 
 #endif /* !GENERATION_HPP */

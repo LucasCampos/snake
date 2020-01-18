@@ -34,27 +34,50 @@ int find_index(const std::vector<float>& cumulative, float point) {
     return -1;
 }
 
-NeuralNetwork Generation::cross_breed(const NeuralNetwork& nn1, const NeuralNetwork& nn2) {
+void Generation::mutate(NeuralNetwork& nn) {
 
-    NeuralNetwork nn;
     for (int i = 0; i < 18; ++i) {
         for (int j = 0; j < 24; ++j) {
-            nn.in(i,j) = (gen()%2 == 0? nn1.in(i,j): nn2.in(i,j));
+            if (dist(gen) < mutation_rate)
+                nn.in(i,j) += 0.2*(2*dist(gen)-1);
         }
     }
     for (int i = 0; i < 18; ++i) {
         for (int j = 0; j < 18; ++j) {
-            nn.hidden1(i,j) = (gen()%2 == 0? nn1.hidden1(i,j): nn2.hidden1(i,j));
-            nn.hidden2(i,j) = (gen()%2 == 0? nn1.hidden2(i,j): nn2.hidden2(i,j));
+            if (dist(gen) < mutation_rate)
+                nn.hidden1(i,j) += 0.2*(2*dist(gen)-1);
+            if (dist(gen) < mutation_rate)
+                nn.hidden2(i,j) += 0.2*(2*dist(gen)-1);
         }
     }
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 18; ++j) {
-            nn.out(i,j) = (gen()%2 == 0? nn1.out(i,j): nn2.out(i,j));
+            if (dist(gen) < mutation_rate)
+                nn.out(i,j) += 0.2*(2*dist(gen)-1);
         }
     }
+}
 
-    nn.compress();
+NeuralNetwork Generation::cross_breed(const NeuralNetwork& nn1, const NeuralNetwork& nn2) {
+
+    NeuralNetwork nn;
+    std::uniform_int_distribution<int> dist(0,1);
+    for (int i = 0; i < 18; ++i) {
+        for (int j = 0; j < 24; ++j) {
+            nn.in(i,j) = (dist(gen)%2 == 0? nn1.in(i,j): nn2.in(i,j));
+        }
+    }
+    for (int i = 0; i < 18; ++i) {
+        for (int j = 0; j < 18; ++j) {
+            nn.hidden1(i,j) = (dist(gen)%2 == 0? nn1.hidden1(i,j): nn2.hidden1(i,j));
+            nn.hidden2(i,j) = (dist(gen)%2 == 0? nn1.hidden2(i,j): nn2.hidden2(i,j));
+        }
+    }
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 18; ++j) {
+            nn.out(i,j) = (dist(gen)%2 == 0? nn1.out(i,j): nn2.out(i,j));
+        }
+    }
 
     return nn;
 
@@ -68,7 +91,7 @@ void Generation::new_gen() {
     float tot_fitness = std::accumulate(fitness.begin(), fitness.end(), 0);
     auto fit2 = fitness;
     std::transform(fitness.begin(), fitness.end(), fit2.begin(), [&](double x){return x/tot_fitness;});
-    
+
 
     std::vector cumulative = std::vector<float>(fit2.size());
     std::partial_sum(fit2.begin(), fit2.end(), cumulative.begin());
@@ -87,6 +110,8 @@ void Generation::new_gen() {
         int idx2 = find_index(cumulative, dist(gen));
 
         new_nns[i] = cross_breed(nns[idx1], nns[idx2]);
+        mutate(new_nns[i]);
+        new_nns[i].compress();
 
     }
 
