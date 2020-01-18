@@ -27,11 +27,31 @@ void Snake::take_move(Move mov) {
     head = move(head, mov);
 }
 
+Move check_direction(Move new_direction, Move direction) {
+
+    if ((new_direction == Move::UP) && (direction != Move::DOWN))
+        return new_direction;
+
+    if ((new_direction == Move::DOWN) && (direction != Move::UP))
+        return new_direction;
+
+    if ((new_direction == Move::LEFT) && (direction != Move::RIGHT))
+        return new_direction;
+
+    if ((new_direction == Move::RIGHT) && (direction != Move::LEFT))
+        return new_direction;
+
+    return direction;
+
+}
+
 void Snake::take_move(const Board& board) {
     left_to_live--;
     age++;
     tail.push_back(head);
-    head = move(head, brain.next_move(board));
+    Move new_direction = brain.next_move(board);
+    direction = check_direction(new_direction, direction);
+    head = move(head, direction);
 }
 
 bool Snake::check_collision() const {

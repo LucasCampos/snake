@@ -32,6 +32,7 @@ public:
 
     boost::circular_buffer<Location> tail;
     Location head;
+    Move direction;
 
     int age;
     int left_to_live;
