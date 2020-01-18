@@ -13,8 +13,8 @@ Board::Board (int size_x, int size_y, const NeuralNetwork& nn): size_x(size_x), 
     std::random_device rd;  //Will be used to obtain a seed for the random number engine
     gen.seed(rd());
 
-    dis_x = std::uniform_int_distribution(1, size_x);
-    dis_y = std::uniform_int_distribution(1, size_y);
+    dis_x = std::uniform_int_distribution(1, size_x-1);
+    dis_y = std::uniform_int_distribution(1, size_y-1);
 
     /* snake.head.x = dis_x(gen); */
     /* snake.head.y = dis_y(gen); */

@@ -29,6 +29,7 @@ void Snake::take_move(Move mov) {
 
 Move check_direction(Move new_direction, Move direction) {
 
+    return new_direction;
     if ((new_direction == Move::UP) && (direction != Move::DOWN))
         return new_direction;
 

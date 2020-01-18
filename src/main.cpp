@@ -59,7 +59,7 @@ void print_game(const Board& b) {
 
 float play_game(const NeuralNetwork& nn) {
 
-    Board b(64, 64, nn);
+    Board b(32, 32, nn);
     b.snake.grow();
     while (!b.check_collision() && (b.snake.left_to_live > 0)) {
         b.snake.take_move(b);
@@ -71,7 +71,7 @@ float play_game(const NeuralNetwork& nn) {
 
 void show_game(const NeuralNetwork& nn) {
 
-    Board b(64, 64, nn);
+    Board b(32, 32, nn);
     b.snake.grow();
     while (!b.check_collision() && (b.snake.left_to_live > 0)) {
         std::this_thread::sleep_for(std::chrono::milliseconds(300));
